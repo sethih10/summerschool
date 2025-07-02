@@ -10,8 +10,9 @@ void print_buffer(std::vector<int> &buffer);
 
 int main(int argc, char *argv[])
 {
-    int size, rank, buf_size=12;
+    int size, rank, buf_size=10000;
     std::vector<int> buf(buf_size);
+    std::vector<int> recv_buf(buf_size);
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -30,6 +31,47 @@ int main(int argc, char *argv[])
     /* Send everywhere */
     // TODO: Implement the broadcast of the array buf
 
+    //int count = buf_size/size;
+    //recv_buf.resize(count);
+    //int* actual_recv = recv_buf.data();
+    //if (rank == 0)
+    //{
+    //    //actual_recv = MPI_IN_PLACE;
+    //    MPI_Scatter(buf.data(), count, MPI_INT, MPI_IN_PLACE, count, MPI_INT, 0, MPI_COMM_WORLD);
+//
+    //}
+    //else
+    //    MPI_Scatter(buf.data(), count, MPI_INT, buf.data(), count, MPI_INT, 0, MPI_COMM_WORLD);
+
+
+    int index = buf_size/size;
+    if (rank == 0)
+    {
+        for(int i = 1; i<size; i++)
+        {
+            printf("Send rank %d with buffer size %d\n", i, index);
+            MPI_Send(buf.data() + i*index, index, MPI_INT, i, 111, MPI_COMM_WORLD);
+        }
+    }
+    else
+    {
+        MPI_Recv(buf.data(), index, MPI_INT, MPI_ANY_SOURCE, 111, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }
+
+    //MPI_Bcast(buf.data(), buf.size(), MPI_INT, 0, MPI_COMM_WORLD);
+
+    //if (rank == 0)
+    //{
+    //    for(int i = 1; i<size; i++)
+    //    {
+    //        MPI_Send(buf.data(), buf.size(), MPI_INT, i, 111, MPI_COMM_WORLD);
+    //    }
+    //}
+    //else
+    //{
+    //    MPI_Recv(buf.data(), buf.size(), MPI_INT, MPI_ANY_SOURCE, 111, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    //}
+
     /* End timing */
     double t1 = MPI_Wtime();
 
@@ -38,7 +80,7 @@ int main(int argc, char *argv[])
     if (rank == 0) {
         printf("Time elapsed: %6.8f s\n", t1 - t0);
     }
-
+    //print_buffer(recv_buf);
     MPI_Finalize();
     return 0;
 }

@@ -33,6 +33,16 @@ int main() {
   b = (float*) malloc(N_bytes);
   c = (float*) malloc(N_bytes);
 
+  hipEvent_t start_event_a;
+  hipEvent_t start_event_b;
+  hipEvent_t start_event_c;
+
+  HIP_ERRCHK(hipEventCreate(start_event_a));
+  HIP_ERRCHK(hipEventCreate(start_event_b));
+  HIP_ERRCHK(hipEventCreate(start_event_c));
+
+
+
   hipStream_t stream_a; 
   hipStream_t stream_b; 
   hipStream_t stream_c; 
@@ -52,17 +62,22 @@ int main() {
   HIP_ERRCHK(hipDeviceSynchronize());
 
   // Execute kernels in sequence
+  HIP_ERRCHK(hipEventRecord(start_event_a, stream_a));
   kernel_a<<<gridsize, blocksize,0,stream_a>>>(d_a, N);
   HIP_ERRCHK(hipGetLastError());
 
+  HIP_ERRCHK(hipStreamWaitEvent())
+  HIP_ERRCHK(hipEventRecord(start_event_b, stream_b));
   kernel_b<<<gridsize, blocksize,0,stream_b>>>(d_b, N);
   HIP_ERRCHK(hipGetLastError());
 
+  HIP_ERRCHK(hipEventRecord(start_event_c, stream_c));
   kernel_c<<<gridsize, blocksize,0,stream_c>>>(d_c, N);
   HIP_ERRCHK(hipGetLastError());
 
   // Copy results back
   HIP_ERRCHK(hipMemcpyAsync(a, d_a, N_bytes, hipMemcpyDefault, stream_a));
+  HIP_ERRCHK(hipEventRecord(start_d2h_event, stream_b));
   HIP_ERRCHK(hipMemcpyAsync(b, d_b, N_bytes, hipMemcpyDefault, stream_b));
   HIP_ERRCHK(hipMemcpyAsync(c, d_c, N_bytes, hipMemcpyDefault, stream_c));
 

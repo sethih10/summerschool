@@ -37,6 +37,23 @@ int main(int argc, char *argv[])
      *       (and maybe prepare some parameters for the call)
      */
 
+    if (rank < (ntasks/2))
+        color = 1;
+    else
+        color = 2;
+
+    MPI_Comm subcomp;
+    MPI_Comm_split(MPI_COMM_WORLD, color, rank, &subcomp);
+
+    int subrank;
+
+    MPI_Comm_rank(subcomp, &subrank);
+
+    MPI_Reduce(sendbuf.data(), recvbuf.data(), recvbuf.size(), MPI_INT, MPI_SUM, 0, subcomp);
+
+    printf("Rank %d in Comm world but rank %d in subcomp %d\n", rank, subrank, color);
+
+
     /* Print data that was received */
     print_buffers(recvbuf);
 

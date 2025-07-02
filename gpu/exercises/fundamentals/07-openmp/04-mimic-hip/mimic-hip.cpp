@@ -30,6 +30,17 @@ int main() {
 }
 */
 
+
+
+
+#pragma omp target teams distribute parallel for collapse(2)
+
+for(size_t tid = 0; tid<N; tid+=1)
+{
+  const int stride = omp_get_num_teams()*omp_get_num_threads();
+  for(size_t k = tid; k<N; k+= stride)
+    c[k] = a[k] + b[k];
+}
 #pragma omp target update from(c[:N])
 
   for (size_t k = 0; k < 10; ++k) std::cout << c[k] << " ";

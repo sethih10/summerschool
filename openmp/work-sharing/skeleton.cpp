@@ -17,8 +17,18 @@ int main(void)
      *   vecC = vecA + vecB
      */
 
+    #pragma omp parallel 
+    {
+        #pragma omp for
+        for(int i = 0; i<NX; i++)
+        {
+            vecC[i] = vecA[i] + vecB[i];
+        }
+    }
+
     double sum = 0.0;
     /* Compute the check value */
+
     for (int i = 0; i < NX; i++) {
         sum += vecC[i];
     }

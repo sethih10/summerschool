@@ -34,6 +34,26 @@ int main(int argc, char *argv[])
      *       (and maybe prepare some parameters for the call)
      */
 
+    // CASE - 1
+    //MPI_Bcast(sendbuf.data(), sendbuf.size(), MPI_INT, 0, MPI_COMM_WORLD);
+    //recvbuf = sendbuf;
+
+    // CASE - 2
+    //MPI_Scatter(sendbuf.data(), 2, MPI_INT, recvbuf.data(), 2, MPI_INT, 0, MPI_COMM_WORLD);
+
+    
+    // CASE - 3 
+    //int recvcount[4] = {1,1,2,4};
+    //int disp[4] = {0,1,2, 4};
+
+    //MPI_Gatherv(sendbuf.data(), recvcount[rank], MPI_INT, recvbuf.data(), recvcount,disp, MPI_INT, 1, MPI_COMM_WORLD);
+
+    // CASE - 4
+    for(int i = 0; i<ntasks;i++)
+    {
+        MPI_Scatter(sendbuf.data(), 2, MPI_INT, recvbuf.data() + 2*i, 2, MPI_INT, i, MPI_COMM_WORLD);
+    }
+
     /* Print data that was received */
     /* TODO: use correct buffer */
     print_buffers(recvbuf);

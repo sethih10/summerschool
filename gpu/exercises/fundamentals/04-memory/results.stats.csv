@@ -1,0 +1,2 @@
+"Name","Calls","TotalDurationNs","AverageNs","Percentage"
+"kernel(float*, int)",1,404804,404804,100.0

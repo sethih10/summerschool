@@ -5,7 +5,7 @@
 #SBATCH --output=%x.%J.out
 #SBATCH --partition=small
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=2
+#SBATCH --ntasks-per-node=128
 #SBATCH --time=00:05:00
 
 srun ./prog

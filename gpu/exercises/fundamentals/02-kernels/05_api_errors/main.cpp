@@ -34,11 +34,15 @@ int main(int argc, char **argv) {
     result = hipSetDevice(2);
 
     void *ptr = nullptr;
-    result = hipMalloc(nullptr, 99999999999);
 
-    result = hipMemset(nullptr, 0, 8);
+    HIP_ERRCHK(hipMalloc(&ptr, 1000));
+    //result = hipMalloc(nullptr, 99999999999);
 
-    result = hipFree(ptr);
+    //result = hipMemset(nullptr, 0, 8);
+    HIP_ERRCHK(hipMemset(ptr, 0, 1000));
+
+    //result = hipFree(ptr);
+    HIP_ERRCHK(hipFree(ptr));
 
     return 0;
 }

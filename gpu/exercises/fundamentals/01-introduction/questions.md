@@ -29,26 +29,30 @@ While answering these, consider the example GPU and SM/CU given at the beginning
 
 ### Grids, blocks, warps, threads
 
-1. How many grids does it take, at least, to saturate the entire GPU?
-    - What hardware component does a grid of blocks map to?
+Warp is mapped to 128 compute units
+
+1. How many grids does it take, at least, to saturate the entire GPU? - 1
+    - What hardware component does a grid of blocks map to? Device
     - How many of them are there?
 
 2. How many blocks does it take, at least, to saturate the entire GPU?
     - What hardware component does a block of threads map to?
-    - How many of them are there?
+    - How many of them are there? - 8 because 8CUs
 
 3. What is the minimum amount of threads in a block to saturate an entire CU/SM?
     - What is the warp size?
     - What hardware component does a warp map to?
     - How many of these components are there in a single CU/SM?
+    - 128 threads (considering 1 block), 32 threads (considering 4 blocks)
 
 4. How many threads does it take, in total, to saturate the entire GPU?
     - How many threads to sature a CU/SM (See question 3)?
     - How many blocks to saturate the entire GPU (see question 2)?
+    - 128*8 threads (128 threads in one unit and 8 CUs so 8 blocks)
 
 ### Miscellaneous
 
-1. Can you, the user, control the number of threads in a warp (given a particular GPU)?
-2. Can you, the user, control the number of warps in a block?
-3. Can you, the user, control the number of threads in a block?
+1. Can you, the user, control the number of threads in a warp (given a particular GPU)? No
+2. Can you, the user, control the number of warps in a block? Yes (given different number of threads in a block)
+3. Can you, the user, control the number of threads in a block? Yes
 4. If you answered 'No' to question 2, consider it again after answering question 3.

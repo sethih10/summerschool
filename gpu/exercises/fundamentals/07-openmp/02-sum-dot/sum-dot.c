@@ -15,15 +15,25 @@ int main(void)
     // TODO start: create a data region and offload the two computations
     // so that data is kept in the device between the computations
 
-    for (int i = 0; i < NX; i++) {
-        vecC[i] = vecA[i] + vecB[i];
-    }
+    #pragma omp target map(tofrom: vecA[:NX], vecB[:NX]) map(tofrom:vecC[:NX])
+    {
 
+        #pragma omp teams distribute parallel for 
+        for (int i = 0; i < NX; i++) {
+            vecC[i] = vecA[i] + vecB[i];
+        }
+
+    }
     double res = 0.0;
 
-    for (int i = 0; i < NX; i++) {
-        res += vecC[i] * vecB[i];
+    #pragma omp target map(tofrom: res)
+    {
+        #pragma omp teams distribute parallel for reduction(+:res) //shared(res) //reduction(+:res)
+        for (int i = 0; i < NX; i++) {
+            res += vecC[i] * vecB[i];
     }
+    }
+
 
     // TODO end
 

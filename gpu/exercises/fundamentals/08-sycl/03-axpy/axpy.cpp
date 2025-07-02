@@ -6,6 +6,24 @@ int main() {
   // Set up queue on any available device
   //TODO 
   
+  std::cout<<"\tChecking for GPUs\n"<<std::endl;
+
+  auto gpu_devices = sycl::device::get_devices(sycl::info::device_type::gpu);
+  auto n_gpus = size(gpu_devices);
+
+  std::cout<< "\tThere are "<<n_gpus<<" GPUs\n"<<std::endl;
+
+  if(n_gpus > 0)
+  {
+    queue q{gpu_selector_v};
+  }
+
+  else
+  {
+    std::cout<<"\tThere are no GPUs found. \n Exiting"<<std::endl;
+    exit(1);
+  }
+
   // Initialize input and output memory on the host
   constexpr size_t N = 25600;
   std::vector<int> x(N),y(N);
@@ -17,6 +35,9 @@ int main() {
    // Create buffers for the host data or allocate memory usinggUSM
    // If USM + malloc_device() is used add the copy operations
    // TODO
+
+   sycl::buffer<int, 1> x_buf(x.data(), sycl::range<1>(N));
+   sycl::buffer<int, 1> y_buf(y.data(), sycl::range<1>(N));
 
     // Submit the kernel to the queue
     q.submit([&](handler& h) {
