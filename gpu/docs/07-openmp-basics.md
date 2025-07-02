@@ -8,7 +8,7 @@ lang:   en
 
 # What is OpenMP offloading ?
 
-- Set of OpenMP constructs for heterogeneous systems
+- Set of OpenMP directives for heterogeneous systems
   - e.g. CPU+GPU
 - Code regions are offloaded from the host (CPU) to be 
   computed on a device (GPU)
@@ -274,6 +274,18 @@ end do
   ```
 :::
 
+# `collapse` clause
+
+- Nested loops distributed across threads with the `collapse(<count>)` clause:
+
+```cpp
+#pragma omp target teams distribute parallel for collapse(2)
+for (size_t k = 0; k < M; ++k)
+  for (size_t l = 0; l < N; ++l)
+    c[k][l] = a[k]*b[l];
+```
+
+
 # OpenMP data model in offloading: *`map`* clause
 
 ::: incremental
@@ -362,7 +374,7 @@ for (size_t k = 0; k<N; ++k) a[k] /= 2.0; // Host code
 #pragma omp target teams distribute parallel for
 for (size_t k = 0; k<N; ++k) c[k] *= a[k]; // Device code
 
-#pragma omp target exit data map(from:c[:N]) map(tofrom: a[:N])
+#pragma omp target exit data map(from:c[:N]) map(from: a[:N])
 ```
 
 # Useful runtime API functions
@@ -398,6 +410,43 @@ data`, we can get corresponding device address by
   ```
   - Now *`d_a`* can be passed to a HIP kernel for example.
 :::
+
+# Device functions: `declare target`
+
+- HIP/CUDA: `__device__` functions can be called from kernels.
+- OpenMP: `declare target` construct does the same thing
+- Also works with global variables
+- No shared objects
+
+::::::{.columns}
+
+:::{.column}
+
+```cpp
+#pragma omp declare target
+double fun(double a, double b);
+#pragma omp end declare target
+...
+
+#pragma omp target 
+#pragma omp teams distribute parallel for
+for (int i = 0; i < NX; i++) {
+  vecC[i] = fun(vecA[i], vecB[i]);
+}
+```
+
+:::
+
+:::{.column}
+```cpp
+#pragma omp declare target
+double fun(double a, double b) {
+  return a+b;
+}
+#pragma omp end declare target
+```
+:::
+::::::
 
 # Controlling number of teams and threads
 
@@ -486,8 +535,6 @@ nvfortran -mp=gpu code.f90 -gpu=cc80
 | `OMP_TEAMS_THREAD_LIMIT` | Limits number of threads per team                |
 
 </small>
-
-
 
 
 # Loop construct

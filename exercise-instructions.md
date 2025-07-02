@@ -1,4 +1,4 @@
-# General exercise instructions
+# General exercise instructions for LUMI
 
 ## Accessing LUMI
 
@@ -28,7 +28,7 @@ Now, `/scratch/project_462000956/$USER/summerschool` is your own clone of the su
 and you can modify files there without causing conflicts with other summer school participants.
 
 <details>
-<summary>Optional: Working with through your own git fork</summary>
+<summary>Optional: Working with your own git fork</summary>
 
 **We don't have time to teach git during the summer school, so this is recommended only if you are already somewhat familiar with git.**
 
@@ -219,23 +219,23 @@ Programs need to be executed via the batch job system. A simple job running with
 #SBATCH --job-name=example
 #SBATCH --account=project_462000956
 #SBATCH --partition=small
-#SBATCH --reservation=CSC_summer_school_cpu
+#SBATCH --reservation=SummerSchoolCPU
 #SBATCH --time=00:05:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
 #SBATCH --cpus-per-task=1
 
-srun my_mpi_exe
+srun ./my_mpi_exe
 ```
 
 Save the script *e.g.* as `job.sh` and submit it with `sbatch job.sh`.
 The output of the job will be in the file `slurm-xxxxx.out`. You can check the status of your jobs with `squeue -u $USER` and kill possible hanging applications with `scancel JOBID`.
 
-The reservation `summerschool` is available during the course days and it is accessible only with the training user accounts.
+The reservation is available during the course days and it is accessible only with the training project.
 
 The same result can be achieved using directly `srun`
 ```
-srun --job-name=example --account=project_462000956 --partition=small --reservation=CSC_summer_school_cpu --time=00:05:00 --nodes=1 --ntasks-per-node=4 --cpus-per-task=1  my_mpi_exe
+srun --job-name=example --account=project_462000956 --partition=small --reservation=SummerSchoolCPU --time=00:05:00 --nodes=1 --ntasks-per-node=4 --cpus-per-task=1 ./my_mpi_exe
 ```
 #### Pure OpenMP
 
@@ -246,7 +246,7 @@ for threading with `--cpus-per-task`:
 #SBATCH --job-name=example
 #SBATCH --account=project_462000956
 #SBATCH --partition=small
-#SBATCH --reservation=CSC_summer_school_cpu
+#SBATCH --reservation=SummerSchoolCPU
 #SBATCH --time=00:05:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -254,12 +254,12 @@ for threading with `--cpus-per-task`:
 
 # Set the number of threads based on --cpus-per-task
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-srun my_omp_exe
+srun ./my_omp_exe
 ```
 
 The same result can be achieved using directly `srun`
 ```
-srun --job-name=example --account=project_462000956 --partition=small --reservation=CSC_summer_school_cpu --time=00:05:00 --nodes=1 --ntasks-per-node=1 --cpus-per-task=4   my_omp_exe
+srun --job-name=example --account=project_462000956 --partition=small --reservation=SummerSchoolCPU --time=00:05:00 --nodes=1 --ntasks-per-node=1 --cpus-per-task=4 ./my_omp_exe
 ```
 #### Hybrid MPI+OpenMP
 
@@ -276,19 +276,19 @@ the following batch job script:
 #SBATCH --job-name=example
 #SBATCH --account=project_462000956
 #SBATCH --partition=small
-#SBATCH --reservation=CSC_summer_school_cpu
+#SBATCH --reservation=SummerSchoolCPU
 #SBATCH --time=00:05:00
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=32
 #SBATCH --cpus-per-task=4
 # Set the number of threads based on --cpus-per-task
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-srun my_exe
+srun ./my_exe
 ```
 
 The same result can be achieved using directly `srun`
 ```
-srun --job-name=example --account=project_462000956 --partition=small --reservation=CSC_summer_school_cpu --time=00:05:00 --nodes=2 --ntasks-per-node=32 --cpus-per-task=4   my_omp_exe
+srun --job-name=example --account=project_462000956 --partition=small --reservation=SummerSchoolCPU --time=00:05:00 --nodes=2 --ntasks-per-node=32 --cpus-per-task=4 ./my_omp_exe
 ```
 #### GPU programs
 
@@ -301,18 +301,18 @@ single GPU with single MPI task and a single thread use:
 #SBATCH --job-name=example
 #SBATCH --account=project_462000956
 #SBATCH --partition=small-g
-#SBATCH --reservation=CSC_summer_school_gpu
+#SBATCH --reservation=SummerSchoolGPU
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --time=00:05:00
 
-srun my_gpu_exe
+srun ./my_gpu_exe
 ```
 
 The same result can be achieved using directly `srun`
 ```
-srun --job-name=example --account=project_462000956 --partition=small-g --reservation=CSC_summer_school_gpu --time=00:05:00 --gpus-per-node=1 --nodes=1 --ntasks-per-node=1 --cpus-per-task=1  my_gpu_exe
+srun --job-name=example --account=project_462000956 --partition=small-g --reservation=SummerSchoolGPU --time=00:05:00 --gpus-per-node=1 --nodes=1 --ntasks-per-node=1 --cpus-per-task=1 ./my_gpu_exe
 ```
 **Note!** Some programs require GPU-aware MPI to perform MPI operations using directly the GPU pointers (this is avoiding some GPU-CPU transfers). This is enabled via:
 

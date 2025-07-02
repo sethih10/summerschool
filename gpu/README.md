@@ -44,12 +44,31 @@ concepts to solve some more advanced cases.
 
 - [Matrix transpose](exercises/bonus/06-optimization/matrix-transpose)
 
+## OpenMP offloading
+
+### Fundamentals
+
+- [Hello world with OpenMP offloading](exercises/fundamentals/07-openmp/01-hello-world)
+- [Using data environments](exercises/fundamentals/07-openmp/02-sum-dot)
+- [Data movement clauses and reductions](exercises/fundamentals/07-openmp/03-dot-product)
+- [Mimic HIP](exercises/fundamentals/07-openmp/04-mimic-hip)
+
+### Bonus exercises
+
+- [Heat equation](exercises/bonus/07-openmp/heat-equation)
+- [Interoperability with HIP](exercises/bonus/07-openmp/hip-interop)
+- [Jacobi](exercises/bonus/07-openmp/jacobi)
+
+## SYCL
+
+### Fundamentals
+
+- [SYCL exercises](exercises/fundamentals/08-sycl)
+
 ## Multi-GPU programming
 
 ### Fundamentals
 
-- [Lorem ipsum](exercises/fundamentals/lorem)
-
-### Bonus exercises
-
-- [Lorem ipsum](exercises/bonus/lorem)
+- [Ping-pong with multiple GPUs and MPI](exercises/fundamentals/09-multi-gpu/01-ping-pong)
+- [Vector sum on two GPUs without MPI](exercises/fundamentals/09-multi-gpu/02-vector-sum)
+- [Peer to peer device access](exercises/fundamentals/09-multi-gpu/03-p2pcopy)
